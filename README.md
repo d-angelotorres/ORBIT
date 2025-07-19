@@ -6,38 +6,48 @@
 
 ## 📖 Overview
 
-**ORBIT** is a real-time ISS tracking project that collects location data at scheduled intervals to analyze the satellite's global flyover behavior.
+**ORBIT** is a real-time ISS tracking and visualization project that collects and analyzes satellite telemetry data to explore the global movement and visibility of the International Space Station.
 
-The primary objective is to answer the question:
+The core research question:
 
-> _“How often, and for how long, does the International Space Station (ISS) pass over various parts of the Earth, and are there any observable patterns related to time of day or duration?”_
+> _“How often, and for how long, does the ISS pass over various regions of the Earth, and are there any observable patterns based on geography or time of day?”_
 
-Data is collected using the [WhereTheISSAt](https://wheretheiss.at) API, stored locally, and analyzed to uncover geographic and temporal patterns. The project includes data visualization through graphs, heatmaps, and histograms.
+Using the [WhereTheISSAt](https://wheretheiss.at) API, data was gathered on a scheduled basis and visualized through interactive maps, line graphs, heatmaps, and 3D animations to uncover patterns in altitude, speed, and visibility across two collection periods.
+
+---
+
+## 🛰️ Key Features
+
+- 14 days of real-time ISS data collection
+- Two data resolutions: **30-minute** and **5-minute** intervals
+- Interactive charts powered by **Google Charts**
+- 3D and animated orbital visualizations using **three.js** and **Plotly**
+- Clean, browser-based interface (HTML/JS/CSS)
 
 ---
 
 ## 🔧 Tech Stack
 
-- **Python 3**
-- **Pandas** – data handling and analysis
-- **Matplotlib** – plotting and chart generation
-- **Reverse Geopy** – reverse geolocation (lat/lon → country)
-- **PyCountry** – country name standardization and validation
-- **Cron (macOS)** – scheduled data collection automation
+- **Python 3** – data collection & preprocessing
+- **JavaScript + Google Charts** – data visualization
+- **HTML/CSS** – presentation layer
+- **three.js / Plotly** – 3D/animated orbit plots
+- **Cron (macOS)** – automated interval-based scraping
 
 ---
 
 ## 🌐 API Used
 
-[**WhereTheISSAt**](https://wheretheiss.at)
-Endpoint: `https://api.wheretheiss.at/v1/satellites/25544`
+**WhereTheISSAt**
+[https://wheretheiss.at](https://wheretheiss.at)
+Endpoint: `/v1/satellites/25544`
 
-Provides real-time ISS telemetry including:
+Returns live telemetry data, including:
 
 - Latitude / Longitude
 - Altitude (km)
 - Velocity (km/h)
-- Visibility (daylight / night)
+- Visibility (`daylight`, `eclipsed`, or `visible`)
 
 ---
 
@@ -45,55 +55,84 @@ Provides real-time ISS telemetry including:
 
 ```
 .
-├── data/
-│   ├── iss_30min_week1.csv      # 30-minute interval data (Week 1)
-│   ├── iss_5min_week2.csv       # 5-minute interval data (Week 2)
-│   └── unused.csv               # Extra/out-of-scope data (not used in analysis)
-│
-├── logs/                        # Output logs from cron jobs
-│   ├── cron_log_week1.txt
-│   └── cron_log_week2.txt
-│
-├── plots/                       # Generated visualizations
-│   ├── week1/
-│   └── week2/
-│
-├── src/
-│   ├── analyze.py               # Data analysis & visualization
-│   └── collect_data.py          # API queries and data logging
-│
-├── .gitignore
-├── requirements.txt
-└── README.md
-
+├── data/                       # Collected raw CSV data
+│   ├── iss_30min_week1.csv
+│   ├── iss_5min_week2.csv
+│   └── unused.csv
+├── logs/                       # Cron output logs
+│   ├── cron_log_week1.txt
+│   └── cron_log_week2.txt
+├── requirements.txt            # Python dependencies
+├── src/                        # Backend Python scripts & output
+│   ├── collect_data.py
+│   ├── convert_to_google_charts.py
+│   └── output/
+│       ├── week1_data.js
+│       ├── week1_geo.js
+│       ├── week1_velocity.js
+│       ├── week1_visibility.js
+│       ├── week2_data.js
+│       ├── week2_geo.js
+│       ├── week2_velocity.js
+│       └── week2_visibility.js
+└── view/                       # Frontend & visualizations
+    ├── index.html
+    ├── script.js
+    ├── styles.css
+    └── plots/
+        ├── week1/
+        │   ├── animated_trajectory.html
+        │   └── interactive_3d_plot.html
+        └── week2/
+            ├── animated_trajectory.html
+            └── interactive_3d_plot.html
 ```
 
 ---
 
-## 🕒 Data Collection
+## 📊 Visualizations
 
-- **Frequency**:
+The `index.html` dashboard includes:
 
-  - Every 30 minutes (Week 1)
-  - Every 5 minutes (Week 2)
+- 📈 **Line Charts** – Altitude and velocity over time
+- 🗺️ **World Map** – ISS orbital path with visibility overlay
+- 📅 **Bar Chart** – Number of visible passes per day
+- 📊 **Summary Table** – Min, max, and average stats
 
-- **Tool**: `cron` scheduler (macOS)
+### 🎥 3D / Animated Views
 
-- **Script**: `src/collect_data.py`
+Use the **"Interactive 3D Plot"** and **"Animated Trajectory"** toggles for:
 
-- **Output**: Appends entries to `data/*.csv`
+- 3D orbital view with altitude contours (via Plotly)
+- Realistic animated ISS orbit in 3D space (via three.js)
 
-### Logged Fields:
-
-- Timestamp (human-readable)
-- Latitude & Longitude
-- Altitude (km)
-- Velocity (km/h)
-- Visibility (daylight/night)
+These are dynamically displayed based on the selected dataset (Week 1 or Week 2).
 
 ---
 
-### ⚠️ Notes on Data Integrity
+## 🕒 Data Collection Details
+
+- **Week 1**: Every 30 minutes (337 data points)
+
+- **Week 2**: Every 5 minutes (2016 data points)
+
+- Scheduler: macOS `cron`
+
+- Collector: `src/collect_data.py`
+
+- Output Format: CSV
+
+### Logged Fields:
+
+- Timestamp (UTC)
+- Latitude & Longitude
+- Altitude (km)
+- Velocity (km/h)
+- Visibility (status)
+
+---
+
+## ⚠️ Data Integrity Note
 
 - One data point during **Week 2** (June 1, 2025 at 10:05 UTC) was not recorded due to a temporary DNS resolution error when querying the live API.
 - This resulted in a **single 5-minute gap** in the dataset.
@@ -102,3 +141,12 @@ Provides real-time ISS telemetry including:
 - This type of minor data loss is a known challenge in real-time data collection and does not significantly impact the overall analysis.
 
 ---
+
+## 📌 Usage
+
+To view the dashboard:
+
+1. Navigate to the `view/` directory.
+2. Open `index.html` in a modern browser.
+3. Use the dropdown to switch between Week 1 and Week 2.
+4. Click on the "Interactive 3D Plot" or "Animated Trajectory" to open additional orbit visualizations.
