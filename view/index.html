@@ -1,0 +1,135 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <title>ORBIT: Observing Real-time Behavior of ISS Trajectory</title>
+    <link rel="icon" href="favicon.png" type="image/x-icon" />
+
+    <!-- Google Charts Loader -->
+    <script src="https://www.gstatic.com/charts/loader.js"></script>
+
+    <!-- Data Files -->
+    <script src="../src/output/week1_data.js"></script>
+    <script src="../src/output/week1_geo.js"></script>
+    <script src="../src/output/week1_visibility.js"></script>
+    <script src="../src/output/week1_velocity.js"></script>
+    <script src="../src/output/week2_data.js"></script>
+    <script src="../src/output/week2_geo.js"></script>
+    <script src="../src/output/week2_visibility.js"></script>
+    <script src="../src/output/week2_velocity.js"></script>
+
+    <!-- External CSS and JS -->
+    <link rel="stylesheet" href="styles.css" />
+    <script defer src="script.js"></script>
+  </head>
+  <body>
+    <h1>ORBIT: Observing Real-time Behavior of ISS Trajectory</h1>
+
+    <div id="controls">
+      <label for="datasetSelect">Select Week:</label>
+      <select id="datasetSelect">
+        <option value="week1">Week 1 – 30 Minute Intervals</option>
+        <option value="week2">Week 2 – 5 Minute Intervals</option>
+      </select>
+    </div>
+
+    <div class="chart-container">
+      <div class="chart">
+        <h3 class="chart-title">ISS Altitude Over Time</h3>
+        <div id="altitude_chart" class="chart-div"></div>
+        <div class="chart-buttons">
+          <button onclick="zoomIn()">Zoom In</button>
+          <button onclick="zoomOut()">Zoom Out</button>
+          <button onclick="resetZoom()">Reset Zoom</button>
+        </div>
+      </div>
+    </div>
+
+    <div class="chart-container">
+      <div class="chart">
+        <h3 class="chart-title">ISS Velocity Over Time</h3>
+        <div id="velocity_chart" class="chart-div"></div>
+        <div class="chart-buttons">
+          <button onclick="velocityZoomIn()">Zoom In</button>
+          <button onclick="velocityZoomOut()">Zoom Out</button>
+          <button onclick="velocityResetZoom()">Reset Zoom</button>
+        </div>
+      </div>
+    </div>
+
+    <div class="chart-container">
+      <div class="chart">
+        <h3 class="chart-title">Global Map of ISS Positions</h3>
+        <div id="geo_chart" class="chart-div"></div>
+      </div>
+    </div>
+
+    <div class="chart-container">
+      <div class="chart">
+        <h3 class="chart-title">Visibility Conditions</h3>
+        <div id="visibility_chart" class="chart-div"></div>
+      </div>
+    </div>
+
+    <div class="chart-container">
+      <div class="chart">
+        <h3 class="chart-title">Number of Visible ISS Passes per Day</h3>
+        <div id="visible_passes_chart" class="chart-div"></div>
+      </div>
+    </div>
+
+    <div class="chart-container">
+      <div class="chart">
+        <h3 class="chart-title">ISS Visibility by Time of Day</h3>
+        <div id="visibility_heatmap" class="chart-div"></div>
+      </div>
+    </div>
+
+    <div class="chart-container">
+      <div class="chart">
+        <h3 class="chart-title">Summary Statistics</h3>
+        <div id="summary_stats" class="chart-div"></div>
+      </div>
+    </div>
+
+    <div id="external-plots">
+      <h2>ISS Position Over Earth (Interactive)</h2>
+      <iframe
+        id="iframe3D"
+        width="100%"
+        height="500"
+        style="border: none"
+      ></iframe>
+
+      <h2>Animated ISS Trajectory</h2>
+      <iframe
+        id="iframeAnimated"
+        width="100%"
+        height="500"
+        style="border: none"
+      ></iframe>
+    </div>
+
+    <script>
+      function updateIframes(week) {
+        document.getElementById(
+          "iframe3D"
+        ).src = `plots/${week}/interactive_3d_plot.html`;
+        document.getElementById(
+          "iframeAnimated"
+        ).src = `plots/${week}/animated_trajectory.html`;
+      }
+
+      const datasetSelect = document.getElementById("datasetSelect");
+      datasetSelect.addEventListener("change", function () {
+        updateIframes(this.value);
+        updateCharts();
+      });
+
+      // Set initial iframes on page load
+      document.addEventListener("DOMContentLoaded", function () {
+        updateIframes(datasetSelect.value);
+      });
+    </script>
+  </body>
+</html>
