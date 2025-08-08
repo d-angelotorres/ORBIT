@@ -15,6 +15,10 @@ The core research question:
 Using the [WhereTheISSAt](https://wheretheiss.at) API, data was gathered on a scheduled basis and visualized through interactive maps, line graphs, heatmaps, and 3D animations to uncover patterns in altitude, speed, and visibility across two collection periods.
 
 ---
+## 🖥️ Demo
+https://youtu.be/gawMU-XhA0c
+
+---
 
 ## 🛰️ Key Features
 
